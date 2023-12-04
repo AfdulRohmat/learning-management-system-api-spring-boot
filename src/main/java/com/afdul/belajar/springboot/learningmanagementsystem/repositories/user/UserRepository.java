@@ -12,5 +12,9 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findFirstByEmail(String email);
 
+    Optional<User> findFirstByEmailAndActivationCode(String email, int code);
+
     boolean existsByEmail(String email);
+
+
 }

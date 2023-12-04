@@ -2,6 +2,7 @@ package com.afdul.belajar.springboot.learningmanagementsystem.controllers.auth;
 
 import com.afdul.belajar.springboot.learningmanagementsystem.dtos.auth.RegisterUserRequest;
 import com.afdul.belajar.springboot.learningmanagementsystem.dtos.auth.RegisterUserResponse;
+import com.afdul.belajar.springboot.learningmanagementsystem.dtos.auth.VerifyEmailRequest;
 import com.afdul.belajar.springboot.learningmanagementsystem.repositories.user.UserRepository;
 import com.afdul.belajar.springboot.learningmanagementsystem.services.auth.AuthService;
 import com.afdul.belajar.springboot.learningmanagementsystem.utils.response.ResponseHandler;
@@ -31,6 +32,16 @@ public class AuthController {
 
             RegisterUserResponse RegisterUserResponse = authService.register(request);
             return ResponseHandler.generateResponse("Success. Please check your email to activate your account", HttpStatus.OK, RegisterUserResponse);
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
+        }
+    }
+
+    @PostMapping(path = "/verify-email")
+    public ResponseEntity<Object> verifyEmail(@RequestBody VerifyEmailRequest request) {
+        try {
+            authService.verifyEmail(request);
+            return ResponseHandler.generateResponse("Activation Success. Please login", HttpStatus.OK, null);
         } catch (Exception e) {
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
         }
