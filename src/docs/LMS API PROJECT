@@ -14,7 +14,7 @@ Modules / Services :
 - Course Service
 	- Create Course
 	- Update Course by id
-	- Get course by id -- withouth purchasing
+	- Get course by id -- without purchasing
 	- Get all courses -- only admin
 	- Get courses content (list video course) -- on user after purchase the course
 	- Add question to particular course content

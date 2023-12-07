@@ -1,4 +1,4 @@
-package com.afdul.belajar.springboot.learningmanagementsystem.utils;
+package com.afdul.belajar.springboot.learningmanagementsystem.auth.util;
 
 import java.util.Random;
 

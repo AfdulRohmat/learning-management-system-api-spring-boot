@@ -1,4 +1,4 @@
-package com.afdul.belajar.springboot.learningmanagementsystem.services.email;
+package com.afdul.belajar.springboot.learningmanagementsystem.auth.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;

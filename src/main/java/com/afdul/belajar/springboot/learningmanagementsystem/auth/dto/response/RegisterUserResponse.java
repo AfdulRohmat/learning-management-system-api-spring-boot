@@ -1,16 +1,22 @@
-package com.afdul.belajar.springboot.learningmanagementsystem.dtos.auth;
+package com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.response;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.UUID;
+
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RegisterUserRequest {
+public class RegisterUserResponse {
 
     @NotBlank
     @Size(max = 100)
@@ -18,10 +24,8 @@ public class RegisterUserRequest {
 
     @NotBlank
     @Size(max = 100)
-    @Email(message = "Please provide a valid email address")
+    @Email()
     private String email;
 
-    @NotBlank
-    @Size(max = 100)
-    private String password;
+
 }

@@ -1,4 +1,4 @@
-package com.afdul.belajar.springboot.learningmanagementsystem.utils.response;
+package com.afdul.belajar.springboot.learningmanagementsystem.utils;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -20,21 +20,22 @@ Response Body (Success) :
   "success": true,
   "message": "Please check yout email at afdulrohmat03@gmail.com to activate yout account",
   "data" : {
-    "activation_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im5hbWUiOiJhZmR1bCByb2htYXQiLCJlbWFpbCI6ImFmZHVscm9obWF0MDNAZ21haWwuY29tIiwicGFzc3dvcmQiOiJxd2VydHkxMjMifSwiYWN0aXZhdGlvbkNvZGUiOiIzOTQ5IiwiaWF0IjoxNzAxMTMxODMxLCJleHAiOjE3MDExMzI3MzF9.3ewPoPGy1wyGXvi9UeT6K08UGXvhDThGn7D7Q9PSdY0"
+    "name": "name",
+    "email": "nameExample@gmail.com"
   }
 }
 ```
 
-## Activation
+## Activation Email
 
-Endpoint : POST /api/v1/auth/activate-user
+Endpoint : POST /api/v1/auth/verify-email
 
 Request Body :
 
 ```json
 {
-  "activation_code" : "4458",
-  "activation_token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im5hbWUiOiJhZmR1bCByb2htYXQiLCJlbWFpbCI6ImFmZHVscm9obWF0MDNAZ21haWwuY29tIiwicGFzc3dvcmQiOiJxd2VydHkxMjMifSwiYWN0aXZhdGlvbkNvZGUiOiI0NDU4IiwiaWF0IjoxNzAxMTMxODc4LCJleHAiOjE3MDExMzI3Nzh9.uhalcza3YwLr5YoVu-DBdNAucyUstg3HexboWq1Q4oc"
+  "activation_code" : 445855,
+  "email" : "nameExample@gmail.com"
 }
 ```
 
@@ -42,7 +43,7 @@ Response Body (Success) :
 ```json
 {
   "success": true,
-  "message": "User succesfully activated. Please login then",
+  "message": "User successfully activated. Please login then",
   "data" : null
 }
 ```
@@ -52,6 +53,36 @@ Response Body (Failed) :
 {
   "success": false,
   "message": "Invalid activation code",
+  "data" :null
+}
+```
+
+## Resend Code Activation
+
+Endpoint : POST /api/v1/auth/resend-activation-code
+
+Request Body :
+
+```json
+{
+  "email" : "nameExample@gmail.com"
+}
+```
+
+Response Body (Success) :
+```json
+{
+  "success": true,
+  "message": "The new activation code has been successfully sent to your email ",
+  "data" : null
+}
+```
+
+Response Body (Failed) :
+```json
+{
+  "success": false,
+  "message": "Error",
   "data" :null
 }
 ```

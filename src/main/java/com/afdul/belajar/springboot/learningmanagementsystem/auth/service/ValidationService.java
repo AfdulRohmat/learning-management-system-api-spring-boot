@@ -1,4 +1,4 @@
-package com.afdul.belajar.springboot.learningmanagementsystem.services.validation;
+package com.afdul.belajar.springboot.learningmanagementsystem.auth.service;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
