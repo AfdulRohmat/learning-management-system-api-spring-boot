@@ -12,10 +12,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import jakarta.servlet.http.Cookie;
 
 import java.io.IOException;
 
+
+@Component
 public class AuthTokenFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtils jwtUtils;
@@ -29,21 +33,53 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            String jwt = parseJwt(request);
-            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                String username = jwtUtils.getUserNameFromJwtToken(jwt);
 
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            String token = null;
+            String username = null;
 
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userDetails,
-                                null,
-                                userDetails.getAuthorities());
-
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (request.getCookies() != null) {
+                for (Cookie cookie : request.getCookies()) {
+                    if (cookie.getName().equals("access_token")) {
+                        token = cookie.getValue();
+                    }
+                }
             }
+
+            if (token == null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            username = jwtUtils.extractUsername(token);
+
+            System.out.println(username);
+
+            if (username != null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                if (jwtUtils.validateToken(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                }
+            }
+
+
+            // =================== LEGACY
+//            String jwt = parseJwt(request);
+//            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+//                username = jwtUtils.getUserNameFromJwtToken(jwt);
+//
+//                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+//
+//                UsernamePasswordAuthenticationToken authentication =
+//                        new UsernamePasswordAuthenticationToken(userDetails,
+//                                null,
+//                                userDetails.getAuthorities());
+//
+//                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+//
+//                SecurityContextHolder.getContext().setAuthentication(authentication);
+//            }
         } catch (Exception e) {
             logger.error("Cannot set user authentication: {}", e);
         }
@@ -51,7 +87,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String parseJwt(HttpServletRequest request) {
-        return jwtUtils.getJwtFromCookies(request);
-    }
+//    private String parseJwt(HttpServletRequest request) {
+//        return jwtUtils.getJwtFromCookies(request);
+//    }
 }

@@ -2,37 +2,34 @@ package com.afdul.belajar.springboot.learningmanagementsystem.auth.service;
 
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.config.security.services.UserDetailsImpl;
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.config.security.jwt.JwtUtils;
-import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.request.LoginRequest;
-import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.request.RegisterUserRequest;
-import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.request.ResendCodeRequest;
+import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.request.*;
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.response.LoginResponse;
+import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.response.RefreshTokenResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.response.RegisterUserResponse;
-import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.request.VerifyEmailRequest;
+import com.afdul.belajar.springboot.learningmanagementsystem.auth.model.RefreshToken;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.ERole;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.Role;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.User;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.repository.RoleRepository;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
 import static com.afdul.belajar.springboot.learningmanagementsystem.auth.util.ActivationCodeGenerator.generateActivationCode;
 
@@ -60,35 +57,80 @@ public class AuthService {
     @Autowired
     PasswordEncoder encoder;
 
+    @Autowired
+    RefreshTokenService refreshTokenService;
+
+    @Value("${app.jwtExpirationMs}")
+    private int jwtExpirationMs;
+
+    @Value("${app.jwtCookieName}")
+    private String jwtCookieName;
+
+
     // LOGIN
     @Transactional
-    public ResponseEntity<?> login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request, HttpServletResponse response) {
 
         // Check if is_verified == true. if False throw error
         boolean isVerified = userRepository.isUserVerified(request.getEmail());
-        if(!isVerified){
+        if (!isVerified) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account not verified, please verify your account before");
         }
 
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (authentication.isAuthenticated()) {
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            List<String> roles = userDetails.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .toList();
 
-        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+            String accessToken = jwtUtils.generateToken(request.getEmail());
 
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
+            ResponseCookie cookie = ResponseCookie.from(jwtCookieName, accessToken)
+                    .httpOnly(true)
+                    .secure(false)
+                    .path("/")
+                    .maxAge(jwtExpirationMs)
+                    .build();
 
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                .body(new LoginResponse(
-                        userDetails.getId(), userDetails.getUsername(),
-                        userDetails.getEmail(),
-                        roles)
-                );
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+            return LoginResponse.builder()
+                    .username(userDetails.getUsername())
+                    .email(userDetails.getEmail())
+                    .roles(roles)
+                    .accessToken(accessToken)
+                    .token(refreshToken.getToken()).build();
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email or password");
+        }
+
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+//
+//        List<String> roles = userDetails.getAuthorities().stream()
+//                .map(GrantedAuthority::getAuthority)
+//                .collect(Collectors.toList());
+//
+//        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+//
+//        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+//
+//        ResponseCookie jwtRefreshCookie = jwtUtils.generateRefreshJwtCookie(refreshToken.getToken());
+//
+//        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+//                .header(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString())
+//                .body(new LoginResponse(
+//                        userDetails.getId(), userDetails.getUsername(),
+//                        userDetails.getEmail(),
+//                        roles)
+//                );
+
     }
 
 
@@ -213,9 +255,37 @@ public class AuthService {
     }
 
     // LOGOUT
+//    @Transactional
+//    public LogoutResponse logoutUser() {
+//        Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//
+//        if (!Objects.equals(principle.toString(), "anonymousUser")) {
+//            UUID userId = ((UserDetailsImpl) principle).getId();
+//            refreshTokenService.deleteByUserId(userId);
+//        }
+//
+//        ResponseCookie jwtCookie = jwtUtils.getCleanJwtCookie();
+//        ResponseCookie jwtRefreshCookie = jwtUtils.getCleanJwtRefreshCookie();
+//
+//        return new LogoutResponse("Success logout");
+//    }
+//
+//    // REFRESH TOKEN
     @Transactional
-    public ResponseCookie logoutUser() {
-        return jwtUtils.getCleanJwtCookie();
+    public RefreshTokenResponse refreshToken(RefreshTokenRequest request) {
+
+        return refreshTokenService.findByToken(request.getToken())
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String accessToken = jwtUtils.generateToken(user.getEmail());
+                    return RefreshTokenResponse.builder()
+                            .accessToken(accessToken)
+                            .token(request.getToken()).build();
+
+                }).orElseThrow(() -> new RuntimeException("Refresh Token is not in DB..!!"));
+
+
     }
 
 

@@ -1,15 +1,15 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.auth.controller;
 
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.config.security.jwt.JwtUtils;
-import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.request.LoginRequest;
-import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.request.RegisterUserRequest;
-import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.request.ResendCodeRequest;
+import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.request.*;
+import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.response.LoginResponse;
+import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.response.RefreshTokenResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.response.RegisterUserResponse;
-import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.request.VerifyEmailRequest;
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.service.AuthService;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.repository.RoleRepository;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.repository.UserRepository;
 import com.afdul.belajar.springboot.learningmanagementsystem.utils.ResponseHandler;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -78,21 +78,31 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
         try {
-
-            ResponseEntity<?> loginResponse = authService.login(request);
+            LoginResponse loginResponse = authService.login(request, response);
             return ResponseHandler.generateResponse("Success login", HttpStatus.OK, loginResponse);
         } catch (Exception e) {
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
         }
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<Object> logout() {
+    //    @PostMapping("/logout")
+//    public ResponseEntity<Object> logout() {
+//        try {
+//            LogoutResponse response = authService.logoutUser();
+//            return ResponseHandler.generateResponse("Success to logout", HttpStatus.OK, response);
+//        } catch (Exception e) {
+//            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
+//        }
+//    }
+//
+    @PostMapping("/refresh-token")
+    public ResponseEntity<Object> refreshToken(@RequestBody RefreshTokenRequest request) {
         try {
-            authService.logoutUser();
-            return ResponseHandler.generateResponse("Success to logout", HttpStatus.OK, null);
+            RefreshTokenResponse response = authService.refreshToken(request);
+
+            return ResponseHandler.generateResponse("Success", HttpStatus.OK, response);
         } catch (Exception e) {
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
         }

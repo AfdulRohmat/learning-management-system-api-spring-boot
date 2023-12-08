@@ -23,6 +23,7 @@ public class UserDetailsImpl implements UserDetails {
 
     private final String username;
 
+
     @Getter
     private final String email;
 
@@ -52,11 +53,12 @@ public class UserDetailsImpl implements UserDetails {
                 user.getPassword(),
                 authorities);
     }
-    
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
     }
+
 
     @Override
     public String getPassword() {
@@ -65,7 +67,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override
