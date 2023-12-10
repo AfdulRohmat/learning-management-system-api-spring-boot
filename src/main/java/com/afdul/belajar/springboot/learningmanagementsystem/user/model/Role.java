@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Setter
 @Getter
 @Entity
 @Table(name = "roles")
@@ -26,11 +27,4 @@ public class Role {
         this.name = name;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setName(ERole name) {
-        this.name = name;
-    }
 }

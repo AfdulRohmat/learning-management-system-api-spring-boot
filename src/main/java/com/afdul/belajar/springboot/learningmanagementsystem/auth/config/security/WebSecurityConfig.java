@@ -30,13 +30,10 @@ public class WebSecurityConfig {
     UserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    AuthTokenFilter authTokenFilter;
-
-    @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
     @Bean
-    public Filter authenticationJwtTokenFilter() {
+    public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter();
     }
 
@@ -64,22 +61,15 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers(
-                                        "/api/v1/auth/register",
-                                        "/api/v1/auth/login",
-                                        "/api/v1/auth/verify-email",
-                                        "/api/v1/auth/resend-activation-code"
-                                )
-                                .permitAll()
-                                .requestMatchers("/api/v1/**")
-                                .authenticated()
-                )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                        auth.requestMatchers("/api/v1/auth/**").permitAll()
+                                .anyRequest().authenticated()
+                );
 
         http.authenticationProvider(authenticationProvider());
 
-        http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

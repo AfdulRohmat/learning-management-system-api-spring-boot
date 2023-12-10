@@ -96,17 +96,18 @@ public class AuthController {
 //            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
 //        }
 //    }
-//
-    @PostMapping("/refresh-token")
-    public ResponseEntity<Object> refreshToken(@RequestBody RefreshTokenRequest request) {
-        try {
-            RefreshTokenResponse response = authService.refreshToken(request);
 
-            return ResponseHandler.generateResponse("Success", HttpStatus.OK, response);
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
-        }
-    }
+
+//    @PostMapping("/refresh-token")
+//    public ResponseEntity<Object> refreshToken(@RequestBody RefreshTokenRequest request) {
+//        try {
+//            RefreshTokenResponse response = authService.refreshToken(request);
+//
+//            return ResponseHandler.generateResponse("Success", HttpStatus.OK, response);
+//        } catch (Exception e) {
+//            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
+//        }
+//    }
 
 
 }

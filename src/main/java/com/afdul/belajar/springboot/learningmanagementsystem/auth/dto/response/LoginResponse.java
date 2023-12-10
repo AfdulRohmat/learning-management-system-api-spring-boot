@@ -29,6 +29,7 @@ public class LoginResponse {
     @JsonProperty("access_token")
     private String accessToken;
 
-    private String token;
+    @JsonProperty("token_type")
+    private String tokenType;
 
 }

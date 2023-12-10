@@ -25,6 +25,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -81,55 +82,41 @@ public class AuthService {
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
         if (authentication.isAuthenticated()) {
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+            String jwt = jwtUtils.generateJwtToken(userDetails);
 
             List<String> roles = userDetails.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
                     .toList();
 
-            RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
-            String accessToken = jwtUtils.generateToken(request.getEmail());
+//            RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
-            ResponseCookie cookie = ResponseCookie.from(jwtCookieName, accessToken)
-                    .httpOnly(true)
-                    .secure(false)
-                    .path("/")
-                    .maxAge(jwtExpirationMs)
-                    .build();
+//
+// ============= IMPLEMENTATION IF USING COOKIE
+//            String accessToken = jwtUtils.generateJwtToken(authentication);
 
-            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+//            ResponseCookie cookie = ResponseCookie.from(jwtCookieName, jwt)
+//                    .httpOnly(true)
+//                    .secure(false)
+//                    .path("/")
+//                    .maxAge(jwtExpirationMs)
+//                    .build();
+//
+//            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
             return LoginResponse.builder()
                     .username(userDetails.getUsername())
                     .email(userDetails.getEmail())
                     .roles(roles)
-                    .accessToken(accessToken)
-                    .token(refreshToken.getToken()).build();
+                    .accessToken(jwt)
+                    .tokenType("Bearer")
+                    .build();
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email or password");
         }
-
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-//
-//        List<String> roles = userDetails.getAuthorities().stream()
-//                .map(GrantedAuthority::getAuthority)
-//                .collect(Collectors.toList());
-//
-//        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
-//
-//        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
-//
-//        ResponseCookie jwtRefreshCookie = jwtUtils.generateRefreshJwtCookie(refreshToken.getToken());
-//
-//        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-//                .header(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString())
-//                .body(new LoginResponse(
-//                        userDetails.getId(), userDetails.getUsername(),
-//                        userDetails.getEmail(),
-//                        roles)
-//                );
 
     }
 
@@ -269,24 +256,25 @@ public class AuthService {
 //
 //        return new LogoutResponse("Success logout");
 //    }
-//
+
+
 //    // REFRESH TOKEN
-    @Transactional
-    public RefreshTokenResponse refreshToken(RefreshTokenRequest request) {
-
-        return refreshTokenService.findByToken(request.getToken())
-                .map(refreshTokenService::verifyExpiration)
-                .map(RefreshToken::getUser)
-                .map(user -> {
-                    String accessToken = jwtUtils.generateToken(user.getEmail());
-                    return RefreshTokenResponse.builder()
-                            .accessToken(accessToken)
-                            .token(request.getToken()).build();
-
-                }).orElseThrow(() -> new RuntimeException("Refresh Token is not in DB..!!"));
-
-
-    }
+//    @Transactional
+//    public RefreshTokenResponse refreshToken(RefreshTokenRequest request) {
+//
+//        return refreshTokenService.findByToken(request.getToken())
+//                .map(refreshTokenService::verifyExpiration)
+//                .map(RefreshToken::getUser)
+//                .map(user -> {
+//                    String accessToken = jwtUtils.generateToken(user.getEmail());
+//                    return RefreshTokenResponse.builder()
+//                            .accessToken(accessToken)
+//                            .token(request.getToken()).build();
+//
+//                }).orElseThrow(() -> new RuntimeException("Refresh Token is not in DB..!!"));
+//
+//
+//    }
 
 
 }
