@@ -4,14 +4,18 @@ import com.afdul.belajar.springboot.learningmanagementsystem.auth.config.securit
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.config.security.jwt.JwtUtils;
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.request.*;
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.response.LoginResponse;
+import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.response.LogoutResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.response.RefreshTokenResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.response.RegisterUserResponse;
+import com.afdul.belajar.springboot.learningmanagementsystem.auth.exception.TokenRefreshException;
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.model.RefreshToken;
+import com.afdul.belajar.springboot.learningmanagementsystem.auth.repository.RefreshTokenRepository;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.ERole;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.Role;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.User;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.repository.RoleRepository;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
@@ -30,6 +34,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
 import java.util.*;
 
 import static com.afdul.belajar.springboot.learningmanagementsystem.auth.util.ActivationCodeGenerator.generateActivationCode;
@@ -61,6 +66,13 @@ public class AuthService {
     @Autowired
     RefreshTokenService refreshTokenService;
 
+    @Autowired
+    RefreshTokenRepository refreshTokenRepository;
+
+    @Autowired
+    private EntityManager entityManager;
+
+
     @Value("${app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
@@ -71,6 +83,9 @@ public class AuthService {
     // LOGIN
     @Transactional
     public LoginResponse login(LoginRequest request, HttpServletResponse response) {
+
+        // Check if User by Email exist. if not throw error
+        userRepository.findFirstByEmail(request.getEmail()).orElseThrow(() -> new RuntimeException("User not found. Please register first"));
 
         // Check if is_verified == true. if False throw error
         boolean isVerified = userRepository.isUserVerified(request.getEmail());
@@ -92,7 +107,7 @@ public class AuthService {
                     .map(GrantedAuthority::getAuthority)
                     .toList();
 
-//            RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+            // RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
 //
 // ============= IMPLEMENTATION IF USING COOKIE
@@ -112,6 +127,7 @@ public class AuthService {
                     .email(userDetails.getEmail())
                     .roles(roles)
                     .accessToken(jwt)
+                    .refreshToken("")
                     .tokenType("Bearer")
                     .build();
         } else {
@@ -242,39 +258,62 @@ public class AuthService {
     }
 
     // LOGOUT
-//    @Transactional
-//    public LogoutResponse logoutUser() {
-//        Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//
-//        if (!Objects.equals(principle.toString(), "anonymousUser")) {
-//            UUID userId = ((UserDetailsImpl) principle).getId();
-//            refreshTokenService.deleteByUserId(userId);
-//        }
-//
+    @Transactional
+    public LogoutResponse logoutUser() {
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UUID userId = userDetails.getId();
+        refreshTokenService.deleteByUserId(userId);
+
+
+//        ============= IMPLEMENTATION IF USING COOKIE
 //        ResponseCookie jwtCookie = jwtUtils.getCleanJwtCookie();
 //        ResponseCookie jwtRefreshCookie = jwtUtils.getCleanJwtRefreshCookie();
-//
-//        return new LogoutResponse("Success logout");
-//    }
+
+        return new LogoutResponse("Success logout");
+    }
 
 
-//    // REFRESH TOKEN
-//    @Transactional
-//    public RefreshTokenResponse refreshToken(RefreshTokenRequest request) {
+    // REFRESH TOKEN
+    @Transactional
+    public RefreshTokenResponse refreshToken(RefreshTokenRequest request) {
+
+        return refreshTokenService.findByToken(request.getRefreshToken())
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String accessToken = jwtUtils.generateTokenFromUsername(user.getEmail());
+                    return RefreshTokenResponse.builder()
+                            .accessToken(accessToken)
+                            .refreshToken(request.getRefreshToken())
+                            .build();
+                }).orElseThrow(() -> new RuntimeException(
+                        "Refresh token is not in database!"));
+
+
+//        String requestRefreshToken = request.getRefreshToken();
 //
-//        return refreshTokenService.findByToken(request.getToken())
-//                .map(refreshTokenService::verifyExpiration)
-//                .map(RefreshToken::getUser)
-//                .map(user -> {
-//                    String accessToken = jwtUtils.generateToken(user.getEmail());
-//                    return RefreshTokenResponse.builder()
-//                            .accessToken(accessToken)
-//                            .token(request.getToken()).build();
+//        // Get Token by Id
+//        RefreshToken token = refreshTokenRepository.findByToken(requestRefreshToken).orElseThrow(() -> new RuntimeException("Refresh Token is not in DB..!!"));
 //
-//                }).orElseThrow(() -> new RuntimeException("Refresh Token is not in DB..!!"));
+//        // Verify expiration by compare a date
+//        // If Expired, delete token then throw error. ask to login again
+//        if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
+//            User user = userRepository.findById(token.getUser().getId()).orElseThrow(() -> new RuntimeException("User not found"));
+//            refreshTokenRepository.deleteByUser(user);
+//            System.out.println("Success Delete ");
+//            throw new RuntimeException("Refresh token was expired. Please make a new login request");
+//        }
 //
-//
-//    }
+//        // generate new refresh token
+//        User user = userRepository.findById(token.getUser().getId()).orElseThrow(() -> new RuntimeException("User not found"));
+//        String accessToken = jwtUtils.generateTokenFromUsername(user.getEmail());
+//        return RefreshTokenResponse.builder()
+//                .accessToken(accessToken)
+//                .refreshToken(requestRefreshToken)
+//                .build();
+
+
+    }
 
 
 }

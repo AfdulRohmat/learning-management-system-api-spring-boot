@@ -1,5 +1,6 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.user.model;
 
+import com.afdul.belajar.springboot.learningmanagementsystem.course.model.Course;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -40,4 +42,9 @@ public class User {
 
     @Column(name = "activation_code")
     private Integer activationCode;
+
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL)
+    private List<Course> createdCourses;
+
+
 }

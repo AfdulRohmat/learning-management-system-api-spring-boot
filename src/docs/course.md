@@ -47,26 +47,14 @@ Request Body :
     {
       "title": "Lorem Ipsum",
       "description": "desc Lorem Ipsum",
-      "videoUrl": "hyerkjd23",
-      "videoLength": 12,
-      "links": [
-        {
-          "title": "link video 1",
-          "url": "https://www.youtube.com/watch?v=kf6yyxMck8Y&t=16705s&ab_channel=Becodemy"
-        }
-      ]
+      "videoUrl": "https://www.youtube.com/watch?v=kf6yyxMck8Y&t=16705s&ab_channel=Becodemy",
+      "videoLength": 12
     },
     {
-      "title": "Dolor Amet",
-      "description": "desc Dolor Amet",
-      "videoUrl": "aaassddff",
-      "videoLength": 18,
-      "links": [
-        {
-          "title": "link video 2",
-          "url": "https://www.youtube.com/watch?v=kf6yyxMck8Y&t=16705s&ab_channel=Becodemy"
-        }
-      ]
+      "title": "Lorem Ipsum",
+      "description": "desc Lorem Ipsum",
+      "videoUrl": "https://www.youtube.com/watch?v=kf6yyxMck8Y&t=16705s&ab_channel=Becodemy",
+      "videoLength": 12
     }
   ]
 }

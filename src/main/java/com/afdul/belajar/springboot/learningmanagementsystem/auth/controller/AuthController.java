@@ -3,6 +3,7 @@ package com.afdul.belajar.springboot.learningmanagementsystem.auth.controller;
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.config.security.jwt.JwtUtils;
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.request.*;
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.response.LoginResponse;
+import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.response.LogoutResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.response.RefreshTokenResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.response.RegisterUserResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.service.AuthService;
@@ -87,27 +88,27 @@ public class AuthController {
         }
     }
 
-    //    @PostMapping("/logout")
-//    public ResponseEntity<Object> logout() {
-//        try {
-//            LogoutResponse response = authService.logoutUser();
-//            return ResponseHandler.generateResponse("Success to logout", HttpStatus.OK, response);
-//        } catch (Exception e) {
-//            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
-//        }
-//    }
+    @PostMapping("/logout")
+    public ResponseEntity<Object> logout() {
+        try {
+            LogoutResponse response = authService.logoutUser();
+            return ResponseHandler.generateResponse("Success to logout", HttpStatus.OK, response);
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
+        }
+    }
 
 
-//    @PostMapping("/refresh-token")
-//    public ResponseEntity<Object> refreshToken(@RequestBody RefreshTokenRequest request) {
-//        try {
-//            RefreshTokenResponse response = authService.refreshToken(request);
-//
-//            return ResponseHandler.generateResponse("Success", HttpStatus.OK, response);
-//        } catch (Exception e) {
-//            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
-//        }
-//    }
+    @PostMapping("/refresh-token")
+    public ResponseEntity<Object> refreshToken(@RequestBody RefreshTokenRequest request) {
+        try {
+            RefreshTokenResponse response = authService.refreshToken(request);
+
+            return ResponseHandler.generateResponse("Success", HttpStatus.OK, response);
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
+        }
+    }
 
 
 }

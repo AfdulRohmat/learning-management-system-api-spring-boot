@@ -46,8 +46,9 @@ public class RefreshTokenService {
     @Transactional
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
-            refreshTokenRepository.deleteByToken(token.getToken());
-//            refreshTokenRepository.delete(token);
+            refreshTokenRepository.delete(token);
+//            User user = userRepository.findById(token.getUser().getId()).orElseThrow(() -> new RuntimeException("User not found"));
+//            refreshTokenRepository.deleteByUser(user);
             throw new TokenRefreshException(token.getToken(), "Refresh token was expired. Please make a new login request");
         }
 

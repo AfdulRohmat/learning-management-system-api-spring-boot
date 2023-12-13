@@ -26,6 +26,9 @@ public class LoginResponse {
 
     private List<String> roles;
 
+    @JsonProperty("refresh_token")
+    private String refreshToken;
+
     @JsonProperty("access_token")
     private String accessToken;
 
