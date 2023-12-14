@@ -23,16 +23,9 @@ public class CourseController {
 
     @PostMapping("/")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Object> createCourse(
-            @Valid @RequestBody CourseRequest courseRequest
-    ) {
+    public ResponseEntity<Object> createCourse(@Valid @RequestBody CourseRequest courseRequest) {
         try {
-            courseService.createCourse(
-                    courseRequest,
-                    courseRequest.getBenefits(),
-                    courseRequest.getCourseData(),
-                    courseRequest.getPrerequisites()
-            );
+            courseService.createCourse(courseRequest, courseRequest.getBenefits(), courseRequest.getCourseData(), courseRequest.getPrerequisites());
 
             return ResponseHandler.generateResponse("Success create course", HttpStatus.OK, null);
         } catch (Exception e) {
@@ -40,14 +33,24 @@ public class CourseController {
         }
     }
 
-    @GetMapping("/all/without-purchase")
+    @GetMapping("/without-purchase/all")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<Object> searchCoursesWithoutPurchase(
-            @RequestParam(name = "search", defaultValue = "") String search,
-            Pageable pageable
-    ) {
+    public ResponseEntity<Object> searchCoursesWithoutPurchase(@RequestParam(name = "search", defaultValue = "") String search, Pageable pageable) {
         try {
             Page<CoursesWithoutPurchase> response = courseService.searchCoursesWithoutPurchase(search, pageable);
+
+            return ResponseHandler.generateResponse("Success get data", HttpStatus.OK, response);
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
+        }
+    }
+
+
+    @GetMapping("/without-purchase/{courseId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    public ResponseEntity<Object> getCourseDetailWithoutPurchase(@PathVariable Long courseId) {
+        try {
+            CoursesWithoutPurchase response = courseService.getCourseDetailWithoutPurchase(courseId);
 
             return ResponseHandler.generateResponse("Success get data", HttpStatus.OK, response);
         } catch (Exception e) {

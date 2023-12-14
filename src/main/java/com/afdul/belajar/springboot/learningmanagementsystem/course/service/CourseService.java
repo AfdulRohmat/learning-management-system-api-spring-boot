@@ -117,4 +117,24 @@ public class CourseService {
     public Page<CoursesWithoutPurchase> searchCoursesWithoutPurchase(String search, Pageable pageable) {
         return courseRepository.searchCoursesWithoutPurchase(search, pageable);
     }
+
+    // GET COURSE DETAIL WITHOUT PURCHASE
+    @Transactional
+    public CoursesWithoutPurchase getCourseDetailWithoutPurchase(Long courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException(
+                "Course not found"));
+
+        return new CoursesWithoutPurchase(
+                course.getId(),
+                course.getName(),
+                course.getDescription(),
+                course.getPrice(),
+                course.getEstimatedPrice(),
+                course.getTags(),
+                course.getLevel(),
+                course.getDemoUrl(),
+                course.getBenefits(),
+                course.getPrerequisites()
+        );
+    }
 }

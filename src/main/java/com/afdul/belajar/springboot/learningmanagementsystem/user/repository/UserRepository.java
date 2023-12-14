@@ -1,6 +1,10 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.user.repository;
 
+import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CoursesWithoutPurchase;
+import com.afdul.belajar.springboot.learningmanagementsystem.user.dto.response.UserResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,5 +28,13 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Query("SELECT u.isVerified FROM User u WHERE u.email = :email")
     boolean isUserVerified(@Param("email") String email);
+
+
+    @Query("SELECT DISTINCT u FROM User u " +
+            "LEFT JOIN FETCH u.roles ur " +
+            "WHERE LOWER(u.username) LIKE LOWER(CONCAT('%', :search, '%')) " +
+            "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :search, '%'))")
+    Page<UserResponse> getUsers(@Param("search") String search, Pageable pageable);
+
 
 }

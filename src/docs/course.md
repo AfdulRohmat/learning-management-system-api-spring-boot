@@ -219,7 +219,7 @@ Response Body (Failed) :
 
 ## Get All Courses -- Without Purchasing
 
-Endpoint : GET /api/v1/courses
+Endpoint : GET /api/v1/course/all/without-purchase
 
 Request Header :
 
