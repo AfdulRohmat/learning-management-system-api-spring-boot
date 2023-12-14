@@ -1,20 +1,17 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.course.controller;
 
-import com.afdul.belajar.springboot.learningmanagementsystem.auth.dto.request.ResendCodeRequest;
-import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.request.CourseBenefitRequest;
-import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.request.CourseDataRequest;
-import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.request.CoursePrerequisiteRequest;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.request.CourseRequest;
+import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CoursesWithoutPurchase;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.service.CourseService;
 import com.afdul.belajar.springboot.learningmanagementsystem.utils.ResponseHandler;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -42,4 +39,20 @@ public class CourseController {
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
         }
     }
+
+    @GetMapping("/all/without-purchase")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    public ResponseEntity<Object> searchCoursesWithoutPurchase(
+            @RequestParam(name = "search", defaultValue = "") String search,
+            Pageable pageable
+    ) {
+        try {
+            Page<CoursesWithoutPurchase> response = courseService.searchCoursesWithoutPurchase(search, pageable);
+
+            return ResponseHandler.generateResponse("Success get data", HttpStatus.OK, response);
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
+        }
+    }
+
 }

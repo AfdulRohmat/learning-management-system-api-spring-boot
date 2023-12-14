@@ -2,6 +2,7 @@ package com.afdul.belajar.springboot.learningmanagementsystem.course.service;
 
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.config.security.services.UserDetailsImpl;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.request.CourseRequest;
+import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CoursesWithoutPurchase;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.model.Course;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.model.CourseBenefit;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.model.CourseData;
@@ -10,6 +11,8 @@ import com.afdul.belajar.springboot.learningmanagementsystem.course.repository.*
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.User;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +37,7 @@ public class CourseService {
     @Autowired
     CoursePrerequisiteRepository coursePrerequisiteRepository;
 
+    // CREATE A COURSE -- ONLY ADMIN
     @Transactional
     public void createCourse(CourseRequest courseRequest,
                              List<CourseBenefit> courseBenefitRequest,
@@ -106,5 +110,11 @@ public class CourseService {
 
                     return courseBenefit;
                 }).toList();
+    }
+
+    // GET ALL COURSES WITHOUT PURCHASE
+    @Transactional
+    public Page<CoursesWithoutPurchase> searchCoursesWithoutPurchase(String search, Pageable pageable) {
+        return courseRepository.searchCoursesWithoutPurchase(search, pageable);
     }
 }
