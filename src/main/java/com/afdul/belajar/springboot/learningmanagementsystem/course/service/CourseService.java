@@ -1,12 +1,11 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.course.service;
 
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.config.security.services.UserDetailsImpl;
+import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.request.CourseContentRequest;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.request.CourseRequest;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CoursesWithoutPurchase;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.model.Course;
-import com.afdul.belajar.springboot.learningmanagementsystem.course.model.CourseBenefit;
-import com.afdul.belajar.springboot.learningmanagementsystem.course.model.CourseData;
-import com.afdul.belajar.springboot.learningmanagementsystem.course.model.CoursePrerequisite;
+import com.afdul.belajar.springboot.learningmanagementsystem.course.model.CourseContent;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.repository.*;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.User;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.repository.UserRepository;
@@ -16,8 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class CourseService {
@@ -29,112 +26,80 @@ public class CourseService {
     CourseRepository courseRepository;
 
     @Autowired
-    CourseBenefitRepository courseBenefitRepository;
+    CourseContentRepository courseContentRepository;
 
-    @Autowired
-    CourseDataRepository courseDataRepository;
-
-    @Autowired
-    CoursePrerequisiteRepository coursePrerequisiteRepository;
 
     // CREATE A COURSE -- ONLY ADMIN
     @Transactional
-    public void createCourse(CourseRequest courseRequest,
-                             List<CourseBenefit> courseBenefitRequest,
-                             List<CourseData> courseDataRequest,
-                             List<CoursePrerequisite> coursePrerequisitesRequest
-    ) {
+    public void createCourse(CourseRequest courseRequest) {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findById(userDetails.getId()).orElseThrow(() -> new RuntimeException("User not found"));
+
 
         // Map Course DTO
         Course course = new Course();
         course.setName(courseRequest.getName());
         course.setDescription(courseRequest.getDescription());
         course.setPrice(courseRequest.getPrice());
-        course.setEstimatedPrice(courseRequest.getEstimatedPrice());
+        course.setDiscount(courseRequest.getDiscount());
         course.setTags(courseRequest.getTags());
         course.setLevel(courseRequest.getLevel());
-        course.setDemoUrl(courseRequest.getDemoUrl());
+        course.setVideoDemo(courseRequest.getVideo_demo());
+        course.setThumbnail(courseRequest.getThumbnail());
+        course.setBenefits(courseRequest.getBenefits());
+        course.setPrerequisites(courseRequest.getPrerequisites());
+        course.setRatings(0);
+        course.setPurchased(0);
         course.setCreatedBy(user);
-
-        // Map CoursePrerequisite DTO
-        List<CoursePrerequisite> prerequisites = mapCoursePrerequisiteDtosToEntities(coursePrerequisitesRequest);
-
-
-        // Map CourseBenefit DTO
-        List<CourseBenefit> benefits = mapBenefitDtosToEntities(courseBenefitRequest);
-
-        // Map CourseData DTO
-        List<CourseData> courseData = mapCourseDataDtosToEntities(courseDataRequest);
-
-        // Set all Mapping to Course
-        course.setPrerequisites(prerequisites);
-        course.setBenefits(benefits);
-        course.setCourseData(courseData);
 
         courseRepository.save(course);
     }
 
-    private List<CoursePrerequisite> mapCoursePrerequisiteDtosToEntities(List<CoursePrerequisite> coursePrerequisitesRequest) {
-        return coursePrerequisitesRequest.stream()
-                .map(request -> {
-                    CoursePrerequisite coursePrerequisite = new CoursePrerequisite();
-                    coursePrerequisite.setTitle(request.getTitle());
+    @Transactional
+    public void createCourseContent(CourseContentRequest request) {
 
-                    return coursePrerequisite;
-                }).toList();
+//        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        User user = userRepository.findById(userDetails.getId()).orElseThrow(() -> new RuntimeException("User not found"));
 
+        Course course = courseRepository.findById(request.getCourseId()).orElseThrow(() -> new RuntimeException("Course not found"));
+
+        // Map Course DTO
+        CourseContent courseContent = new CourseContent();
+        courseContent.setName(request.getName());
+        courseContent.setDescription(request.getDescription());
+        courseContent.setVideo_length(request.getVideo_length());
+        courseContent.setVideo_url(request.getVideo_url());
+        courseContent.setThumbnail(request.getThumbnail());
+        courseContent.setCourse_id(course);
+
+        courseContentRepository.save(courseContent);
     }
 
-    private List<CourseData> mapCourseDataDtosToEntities(List<CourseData> courseDataRequest) {
-        return courseDataRequest.stream()
-                .map(request -> {
-                    CourseData courseData = new CourseData();
-                    courseData.setTitle(request.getTitle());
-                    courseData.setDescription(request.getDescription());
-                    courseData.setVideoLength(request.getVideoLength());
-                    courseData.setVideoUrl(request.getVideoUrl());
-
-                    return courseData;
-                }).toList();
-    }
-
-
-    private List<CourseBenefit> mapBenefitDtosToEntities(List<CourseBenefit> courseBenefitRequest) {
-        return courseBenefitRequest.stream()
-                .map(request -> {
-                    CourseBenefit courseBenefit = new CourseBenefit();
-                    courseBenefit.setTitle(request.getTitle());
-
-                    return courseBenefit;
-                }).toList();
-    }
 
     // GET ALL COURSES WITHOUT PURCHASE
-    @Transactional
-    public Page<CoursesWithoutPurchase> searchCoursesWithoutPurchase(String search, Pageable pageable) {
-        return courseRepository.searchCoursesWithoutPurchase(search, pageable);
-    }
+//    @Transactional
+//    public Page<CoursesWithoutPurchase> getCoursesWithoutPurchase(String search, Pageable pageable) {
+//        return courseRepository.searchCoursesWithoutPurchase(search, pageable);
+//    }
 
     // GET COURSE DETAIL WITHOUT PURCHASE
-    @Transactional
-    public CoursesWithoutPurchase getCourseDetailWithoutPurchase(Long courseId) {
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException(
-                "Course not found"));
-
-        return new CoursesWithoutPurchase(
-                course.getId(),
-                course.getName(),
-                course.getDescription(),
-                course.getPrice(),
-                course.getEstimatedPrice(),
-                course.getTags(),
-                course.getLevel(),
-                course.getDemoUrl(),
-                course.getBenefits(),
-                course.getPrerequisites()
-        );
-    }
+//    @Transactional
+//    public CoursesWithoutPurchase getCourseDetailWithoutPurchase(Long courseId) {
+//        Course course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException(
+//                "Course not found"));
+//
+//        return new CoursesWithoutPurchase(
+//                course.getId(),
+//                course.getName(),
+//                course.getDescription(),
+//                course.getPrice(),
+//                course.getEstimatedPrice(),
+//                course.getTags(),
+//                course.getLevel(),
+//                course.getDemoUrl(),
+//                course.getBenefits(),
+//                course.getPrerequisites()
+//        );
+//    }
 }

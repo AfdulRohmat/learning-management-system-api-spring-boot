@@ -1,0 +1,22 @@
+Course
+
+name
+description
+price
+discount
+tags
+level
+vide_demo (Request as File, Response as string url)
+thumbnail
+benefits
+prerequisites
+ratings
+purchased
+
+CourseContent
+title
+description
+video_length
+video_url
+thumbnail
+course_id

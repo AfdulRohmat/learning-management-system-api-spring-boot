@@ -20,11 +20,24 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/")
+    @GetMapping("/admin/all-user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Object> getAllUser(@RequestParam(name = "search", defaultValue = "") String search, Pageable pageable) {
         try {
             Page<UserResponse> response = userService.getAllUser(search, pageable);
+
+            return ResponseHandler.generateResponse("Success get data", HttpStatus.OK, response);
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
+        }
+    }
+
+    // GET USER THAT CURRENTLY LOGIN
+    @GetMapping("/")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Object> getUser() {
+        try {
+            UserResponse response = userService.getUser();
 
             return ResponseHandler.generateResponse("Success get data", HttpStatus.OK, response);
         } catch (Exception e) {

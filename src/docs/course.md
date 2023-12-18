@@ -2,13 +2,11 @@
 
 ## Create Course
 
-Endpoint : GET /api/v1/course
+Endpoint : POST /api/v1/course
 
 Request Header :
 
-- Cookie :
-  access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NjUzNmFhZjk2ZjM1OTlhYzI2NTQ3ZSIsImlhdCI6MTcwMTEzMjMxOSwiZXhwIjoxNzAxMTMyNjE5fQ.R2X5UTbEDn-pqEdHw2KYcw0ZcDHCMFynpKzfD-Y-Ruk;
-  refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NjUzNmFhZjk2ZjM1OTlhYzI2NTQ3ZSIsImlhdCI6MTcwMTEzMjMxOSwiZXhwIjoxNzAxMjE4NzE5fQ.xkM0W2LETb0dt2dEQgFWRsJyGM5r3kIuPptn4NUf0Yc
+- Authorization : Bearer token
 
 Request Body :
 
@@ -45,16 +43,10 @@ Request Body :
   ],
   "courseData": [
     {
-      "title": "Lorem Ipsum",
-      "description": "desc Lorem Ipsum",
-      "videoUrl": "https://www.youtube.com/watch?v=kf6yyxMck8Y&t=16705s&ab_channel=Becodemy",
-      "videoLength": 12
+      "course_data_id": 1
     },
     {
-      "title": "Lorem Ipsum",
-      "description": "desc Lorem Ipsum",
-      "videoUrl": "https://www.youtube.com/watch?v=kf6yyxMck8Y&t=16705s&ab_channel=Becodemy",
-      "videoLength": 12
+      "course_data_id": 3
     }
   ]
 }
@@ -80,15 +72,16 @@ Response Body (Failed) :
 }
 ```
 
+
+
+
 ## Update Course
 
 Endpoint : PUT /api/v1/course/{course_id}
 
 Request Header :
 
-- Cookie :
-  access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NjUzNmFhZjk2ZjM1OTlhYzI2NTQ3ZSIsImlhdCI6MTcwMTEzMjMxOSwiZXhwIjoxNzAxMTMyNjE5fQ.R2X5UTbEDn-pqEdHw2KYcw0ZcDHCMFynpKzfD-Y-Ruk;
-  refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NjUzNmFhZjk2ZjM1OTlhYzI2NTQ3ZSIsImlhdCI6MTcwMTEzMjMxOSwiZXhwIjoxNzAxMjE4NzE5fQ.xkM0W2LETb0dt2dEQgFWRsJyGM5r3kIuPptn4NUf0Yc
+- Authorization : Bearer token
 
 Request Body :
 
@@ -125,85 +118,21 @@ Request Body :
   ],
   "courseData": [
     {
-      "title": "Lorem Ipsum",
-      "description": "desc Lorem Ipsum",
-      "videoUrl": "hyerkjd23",
-      "videoLength": 12,
-      "links": [
-        {
-          "title": "link video 1",
-          "url": "https://www.youtube.com/watch?v=kf6yyxMck8Y&t=16705s&ab_channel=Becodemy"
-        }
-      ]
+      "course_data_id": 1
+    },
+    {
+      "course_data_id": 3
     }
   ]
 }
 ```
 
 Response Body (Success) :
-
 ```json
 {
   "success": true,
   "message": "Success",
-  "data": {
-    "_id": "656541e3dd37f380d0daa87d",
-    "name": "MERN STACK LMS",
-    "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-    "price": 29,
-    "estimatedPrice": 80,
-    "tags": "MRN,LMS,node js,next13,typescript",
-    "level": "Intermediate",
-    "demoUrl": "https://www.youtube.com/watch?v=kf6yyxMck8Y&t=16705s&ab_channel=Becodemy",
-    "benefits": [
-      {
-        "title": "Lorem Ipsum is simply dummy text of the printing and typesetting industry",
-        "_id": "656541e3dd37f380d0daa87e"
-      },
-      {
-        "title": "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
-        "_id": "656541e3dd37f380d0daa87f"
-      },
-      {
-        "title": "It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged",
-        "_id": "656541e3dd37f380d0daa880"
-      }
-    ],
-    "prerequisites": [
-      {
-        "title": "Lorem Ipsum is simply dummy text of the printing and typesetting industry",
-        "_id": "656541e3dd37f380d0daa881"
-      },
-      {
-        "title": "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
-        "_id": "656541e3dd37f380d0daa882"
-      },
-      {
-        "title": "It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged",
-        "_id": "656541e3dd37f380d0daa883"
-      }
-    ],
-    "courseData": [
-      {
-        "title": "Lorem Ipsum",
-        "description": "desc Lorem Ipsum",
-        "videoLength": 12,
-        "_id": "656541e3dd37f380d0daa884"
-      },
-      {
-        "title": "Dolor Amet",
-        "description": "desc Dolor Amet",
-        "videoLength": 18,
-        "_id": "656541e3dd37f380d0daa886"
-      }
-    ],
-    "ratings": 0,
-    "purchased": 0,
-    "reviews": [],
-    "createdAt": "2023-11-28T01:26:59.048Z",
-    "updatedAt": "2023-11-28T01:26:59.048Z",
-    "__v": 0
-  }
+  "data": null
 }
 ```
 
@@ -212,7 +141,7 @@ Response Body (Failed) :
 ```json
 {
   "success": false,
-  "message": "jwt expired",
+  "message": "token expired",
   "data": null
 }
 ```

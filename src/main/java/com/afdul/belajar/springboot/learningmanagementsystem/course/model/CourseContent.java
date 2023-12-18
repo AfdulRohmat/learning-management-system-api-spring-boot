@@ -10,15 +10,14 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "courses")
-public class Course {
+@Table(name = "courseContent")
+public class CourseContent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,32 +27,13 @@ public class Course {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    private double price;
-    private double discount;
-    private String tags;
-    private String level;
-
-    @Column(name = "video_demo")
-    private String videoDemo;
-
+    private int video_length;
+    private String video_url;
     private String thumbnail;
 
-    @ElementCollection
-    @CollectionTable(name = "course_benefits", joinColumns = @JoinColumn(name = "course_id"))
-    @Column(name = "benefit")
-    private List<String> benefits;
-
-    @ElementCollection
-    @CollectionTable(name = "course_prerequisites", joinColumns = @JoinColumn(name = "course_id"))
-    @Column(name = "prerequisites")
-    private List<String> prerequisites;
-
-    private double ratings;
-    private int purchased;
-
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User createdBy;
+    @JoinColumn(name = "course_id", nullable = false)
+    private Course course_id;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -62,5 +42,4 @@ public class Course {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Timestamp updatedAt;
-
 }

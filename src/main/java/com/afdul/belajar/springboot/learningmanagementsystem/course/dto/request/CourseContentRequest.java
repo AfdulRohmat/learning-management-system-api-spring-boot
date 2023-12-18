@@ -1,6 +1,6 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.course.dto.request;
 
-import jakarta.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,9 +10,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CourseDataRequest {
-    private String title;
+public class CourseContentRequest {
+    private String name;
     private String description;
-    private String videoUrl;
-    private int videoLength;
+    private int video_length;
+    private String video_url;
+    private String thumbnail;
+    private Long courseId;
 }

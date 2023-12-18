@@ -1,10 +1,8 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.course.dto.request;
 
-import com.afdul.belajar.springboot.learningmanagementsystem.course.model.CourseBenefit;
-import com.afdul.belajar.springboot.learningmanagementsystem.course.model.CourseData;
-import com.afdul.belajar.springboot.learningmanagementsystem.course.model.CoursePrerequisite;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.User;
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,20 +17,16 @@ import java.util.List;
 public class CourseRequest {
 
     private String name;
-
     private String description;
-
     private double price;
-    private double estimatedPrice;
-
+    private double discount;
     private String tags;
     private String level;
-    private String demoUrl;
-
-    private List<CourseBenefit> benefits;
-
-    private List<CoursePrerequisite> prerequisites;
-
-    private List<CourseData> courseData;
-
+    private String video_demo;
+    private String thumbnail;
+    private List<String> benefits;
+    private List<String> prerequisites;
+    private double ratings;
+    private int purchased;
+    private User createdBy;
 }
