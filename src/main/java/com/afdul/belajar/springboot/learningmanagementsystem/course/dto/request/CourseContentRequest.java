@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CourseContentRequest {
-    private String name;
+    private String title;
     private String description;
     private int video_length;
     private String video_url;

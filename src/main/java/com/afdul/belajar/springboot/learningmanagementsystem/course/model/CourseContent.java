@@ -1,6 +1,5 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.course.model;
 
-import com.afdul.belajar.springboot.learningmanagementsystem.user.model.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,13 +15,13 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "courseContent")
+@Table(name = "courseContents")
 public class CourseContent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String title;
 
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -33,7 +32,7 @@ public class CourseContent {
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
-    private Course course_id;
+    private Course courseId;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

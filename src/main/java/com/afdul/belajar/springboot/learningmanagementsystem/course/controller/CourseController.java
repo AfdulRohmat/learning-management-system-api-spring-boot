@@ -2,7 +2,9 @@ package com.afdul.belajar.springboot.learningmanagementsystem.course.controller;
 
 import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.request.CourseContentRequest;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.request.CourseRequest;
-import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CoursesWithoutPurchase;
+import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CourseDetailResponse;
+import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CourseResponse;
+import com.afdul.belajar.springboot.learningmanagementsystem.course.model.Course;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.service.CourseService;
 import com.afdul.belajar.springboot.learningmanagementsystem.utils.ResponseHandler;
 import jakarta.validation.Valid;
@@ -51,29 +53,43 @@ public class CourseController {
         }
     }
 
-//    @GetMapping("/without-purchase/all")
-//    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-//    public ResponseEntity<Object> searchCoursesWithoutPurchase(@RequestParam(name = "search", defaultValue = "") String search, Pageable pageable) {
-//        try {
-//            Page<CoursesWithoutPurchase> response = courseService.getCoursesWithoutPurchase(search, pageable);
-//
-//            return ResponseHandler.generateResponse("Success get data", HttpStatus.OK, response);
-//        } catch (Exception e) {
-//            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
-//        }
-//    }
+    // GET ALL COURSES WITHOUT PURCHASE
+    @GetMapping("/without-purchase/all")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    public ResponseEntity<Object> searchCoursesWithoutPurchase(@RequestParam(name = "search", defaultValue = "") String search, Pageable pageable) {
+        try {
+            Page<CourseResponse> response = courseService.getAllCourses(search, pageable);
 
+            return ResponseHandler.generateResponse("Success get data", HttpStatus.OK, response);
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
+        }
+    }
 
-//    @GetMapping("/without-purchase/{courseId}")
-//    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-//    public ResponseEntity<Object> getCourseDetailWithoutPurchase(@PathVariable Long courseId) {
-//        try {
-//            CoursesWithoutPurchase response = courseService.getCourseDetailWithoutPurchase(courseId);
-//
-//            return ResponseHandler.generateResponse("Success get data", HttpStatus.OK, response);
-//        } catch (Exception e) {
-//            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
-//        }
-//    }
+    // GET DETAIL COURSE WITHOUT PURCHASE
+    @GetMapping("/without-purchase/{courseId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    public ResponseEntity<Object> getCourseWithoutPurchase(@PathVariable Long courseId) {
+        try {
+            CourseResponse response = courseService.getCourseWithoutPurchase(courseId);
+
+            return ResponseHandler.generateResponse("Success get data", HttpStatus.OK, response);
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
+        }
+    }
+
+    // GET DETAIL COURSE AFTER PURCHASE / ADMIN
+    @GetMapping("/{courseId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') ")
+    public ResponseEntity<Object> getCourseAfterPurchase(@PathVariable Long courseId) {
+        try {
+            CourseDetailResponse response = courseService.getCourseAfterPurchase(courseId);
+
+            return ResponseHandler.generateResponse("Success get data", HttpStatus.OK, response);
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
+        }
+    }
 
 }

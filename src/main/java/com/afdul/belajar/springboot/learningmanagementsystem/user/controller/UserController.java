@@ -1,6 +1,5 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.user.controller;
 
-import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CoursesWithoutPurchase;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.dto.response.UserResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.service.UserService;
 import com.afdul.belajar.springboot.learningmanagementsystem.utils.ResponseHandler;

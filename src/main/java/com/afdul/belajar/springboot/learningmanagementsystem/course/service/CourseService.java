@@ -3,7 +3,9 @@ package com.afdul.belajar.springboot.learningmanagementsystem.course.service;
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.config.security.services.UserDetailsImpl;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.request.CourseContentRequest;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.request.CourseRequest;
-import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CoursesWithoutPurchase;
+import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CourseContentResponse;
+import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CourseDetailResponse;
+import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CourseResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.model.Course;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.model.CourseContent;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.repository.*;
@@ -15,6 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseService {
@@ -35,7 +40,6 @@ public class CourseService {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findById(userDetails.getId()).orElseThrow(() -> new RuntimeException("User not found"));
-
 
         // Map Course DTO
         Course course = new Course();
@@ -58,48 +62,84 @@ public class CourseService {
 
     @Transactional
     public void createCourseContent(CourseContentRequest request) {
-
-//        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        User user = userRepository.findById(userDetails.getId()).orElseThrow(() -> new RuntimeException("User not found"));
-
         Course course = courseRepository.findById(request.getCourseId()).orElseThrow(() -> new RuntimeException("Course not found"));
 
         // Map Course DTO
         CourseContent courseContent = new CourseContent();
-        courseContent.setName(request.getName());
+        courseContent.setTitle(request.getTitle());
         courseContent.setDescription(request.getDescription());
         courseContent.setVideo_length(request.getVideo_length());
         courseContent.setVideo_url(request.getVideo_url());
         courseContent.setThumbnail(request.getThumbnail());
-        courseContent.setCourse_id(course);
+        courseContent.setCourseId(course);
 
         courseContentRepository.save(courseContent);
     }
 
 
-    // GET ALL COURSES WITHOUT PURCHASE
-//    @Transactional
-//    public Page<CoursesWithoutPurchase> getCoursesWithoutPurchase(String search, Pageable pageable) {
-//        return courseRepository.searchCoursesWithoutPurchase(search, pageable);
-//    }
+    // GET ALL COURSES --WITHOUT PURCHASE
+    @Transactional
+    public Page<CourseResponse> getAllCourses(String search, Pageable pageable) {
+        return courseRepository.getAllCourses(search, pageable);
+    }
 
-    // GET COURSE DETAIL WITHOUT PURCHASE
-//    @Transactional
-//    public CoursesWithoutPurchase getCourseDetailWithoutPurchase(Long courseId) {
-//        Course course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException(
-//                "Course not found"));
-//
-//        return new CoursesWithoutPurchase(
-//                course.getId(),
-//                course.getName(),
-//                course.getDescription(),
-//                course.getPrice(),
-//                course.getEstimatedPrice(),
-//                course.getTags(),
-//                course.getLevel(),
-//                course.getDemoUrl(),
-//                course.getBenefits(),
-//                course.getPrerequisites()
-//        );
-//    }
+    // GET DETAIL COURSES --WITHOUT PURCHASE
+    @Transactional
+    public CourseResponse getCourseWithoutPurchase(Long courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Course not found"));
+
+        CourseResponse courseResponse = new CourseResponse();
+        courseResponse.setName(course.getName());
+
+        return CourseResponse.builder()
+                .id(course.getId())
+                .name(course.getName())
+                .description(course.getDescription())
+                .price(course.getPrice())
+                .discount(course.getDiscount())
+                .tags(course.getTags())
+                .level(course.getLevel())
+                .videoDemo(course.getVideoDemo())
+                .thumbnail(course.getThumbnail())
+                .ratings(course.getRatings())
+                .purchased(course.getPurchased())
+                .benefits(course.getBenefits())
+                .prerequisites(course.getPrerequisites())
+                .build();
+    }
+
+    // GET FULL DETAIL COURSE AFTER PURCHASE / ADMIN
+    public CourseDetailResponse getCourseAfterPurchase(Long courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Course not found"));
+        List<CourseContent> courseContents = courseContentRepository.findByCourseId(course);
+
+        List<CourseContentResponse> courseDataList = courseContents.stream()
+                .map(courseContent -> CourseContentResponse.builder()
+                        .id(courseContent.getId())
+                        .title(courseContent.getTitle())
+                        .description(courseContent.getDescription())
+                        .video_url(courseContent.getVideo_url())
+                        .video_length(courseContent.getVideo_length())
+                        .thumbnail(courseContent.getThumbnail())
+                        .build())
+                .toList();
+
+        return CourseDetailResponse.builder()
+                .id(course.getId())
+                .name(course.getName())
+                .description(course.getDescription())
+                .price(course.getPrice())
+                .discount(course.getDiscount())
+                .tags(course.getTags())
+                .level(course.getLevel())
+                .videoDemo(course.getVideoDemo())
+                .thumbnail(course.getThumbnail())
+                .ratings(course.getRatings())
+                .purchased(course.getPurchased())
+                .benefits(course.getBenefits())
+                .prerequisites(course.getPrerequisites())
+                .courseData(courseDataList)
+                .build();
+    }
+
 }

@@ -1,6 +1,6 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.course.repository;
 
-import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CoursesWithoutPurchase;
+import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CourseResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.model.Course;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,13 +12,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
-    @Query("SELECT new " +
-            "com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CoursesWithoutPurchase(" +
+    @Query("SELECT new com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CourseResponse(" +
             "c.id, c.name, c.description, c.price, " +
-            "c.discount, c.tags, c.level, c.videoDemo, c.thumbnail, c.benefits, c.prerequisites, c.ratings, c.purchased)" +
+            "c.discount, c.tags, c.level, c.videoDemo, c.thumbnail, c.ratings, c.purchased, c.benefits, c.prerequisites) " +
             "FROM Course c " +
             "WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :search, '%'))")
-    Page<CoursesWithoutPurchase> searchCoursesWithoutPurchase(@Param("search") String search, Pageable pageable);
+    Page<CourseResponse> getAllCourses(@Param("search") String search, Pageable pageable);
 }
 
 

@@ -1,6 +1,5 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.user.repository;
 
-import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CoursesWithoutPurchase;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.dto.response.UserResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.User;
 import org.springframework.data.domain.Page;

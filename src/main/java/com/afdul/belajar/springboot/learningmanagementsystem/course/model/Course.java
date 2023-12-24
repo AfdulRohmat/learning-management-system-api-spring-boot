@@ -1,6 +1,7 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.course.model;
 
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.User;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +12,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 import java.util.List;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Type;
 
 @Getter
 @Setter
@@ -38,15 +41,13 @@ public class Course {
 
     private String thumbnail;
 
-    @ElementCollection
-    @CollectionTable(name = "course_benefits", joinColumns = @JoinColumn(name = "course_id"))
-    @Column(name = "benefit")
-    private List<String> benefits;
+    @Column(columnDefinition = "jsonb", nullable = false, updatable = true, name = "benefits")
+    @Type(JsonBinaryType.class)
+    private Object benefits;
 
-    @ElementCollection
-    @CollectionTable(name = "course_prerequisites", joinColumns = @JoinColumn(name = "course_id"))
-    @Column(name = "prerequisites")
-    private List<String> prerequisites;
+    @Column(columnDefinition = "jsonb", nullable = false, updatable = true, name = "prerequisites")
+    @Type(JsonBinaryType.class)
+    private Object prerequisites;
 
     private double ratings;
     private int purchased;
