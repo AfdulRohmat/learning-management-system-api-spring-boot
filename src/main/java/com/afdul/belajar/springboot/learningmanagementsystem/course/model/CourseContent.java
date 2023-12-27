@@ -1,5 +1,6 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.course.model;
 
+import com.afdul.belajar.springboot.learningmanagementsystem.question.model.Question;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +10,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -33,6 +36,9 @@ public class CourseContent {
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     private Course courseId;
+
+    @OneToMany(mappedBy = "courseContentId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Question> questions = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

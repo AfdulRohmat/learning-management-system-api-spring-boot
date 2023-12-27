@@ -11,7 +11,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Type;
 
@@ -55,6 +57,12 @@ public class Course {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User createdBy;
+
+    @OneToMany(mappedBy = "courseId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseContent> contents = new ArrayList<>();
+
+    @OneToMany(mappedBy = "courseId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

@@ -1,6 +1,7 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response;
 
 import com.afdul.belajar.springboot.learningmanagementsystem.course.model.CourseContent;
+import com.afdul.belajar.springboot.learningmanagementsystem.user.dto.response.UserInfoResponse;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
@@ -45,5 +46,7 @@ public class CourseDetailResponse {
 
     @JsonProperty("course_data")
     private List<CourseContentResponse> courseData;
+
+    UserInfoResponse author;
 }
 

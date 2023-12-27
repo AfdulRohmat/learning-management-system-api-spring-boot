@@ -1,5 +1,7 @@
-package com.afdul.belajar.springboot.learningmanagementsystem.course.model;
+package com.afdul.belajar.springboot.learningmanagementsystem.question.model;
 
+import com.afdul.belajar.springboot.learningmanagementsystem.course.model.Course;
+import com.afdul.belajar.springboot.learningmanagementsystem.course.model.CourseContent;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,24 +12,29 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "reviews")
-public class Review {
+@Table(name = "questions")
+public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(columnDefinition = "TEXT")
-    private String review;
+    private String question;
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     private Course courseId;
+
+    @ManyToOne
+    @JoinColumn(name = "course_content_id", nullable = false)
+    private CourseContent courseContentId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -40,4 +47,10 @@ public class Review {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Timestamp updatedAt;
+
+    @OneToMany(mappedBy = "questionId", cascade = CascadeType.ALL)
+    private List<QuestionReply> questionReplies;
 }
+
+
+

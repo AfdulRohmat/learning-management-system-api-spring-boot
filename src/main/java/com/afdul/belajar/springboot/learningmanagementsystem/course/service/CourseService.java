@@ -3,12 +3,14 @@ package com.afdul.belajar.springboot.learningmanagementsystem.course.service;
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.config.security.services.UserDetailsImpl;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.request.CourseContentRequest;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.request.CourseRequest;
-import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CourseContentResponse;
-import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CourseDetailResponse;
-import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CourseResponse;
+import com.afdul.belajar.springboot.learningmanagementsystem.course.model.Review;
+import com.afdul.belajar.springboot.learningmanagementsystem.course.repository.ReviewRepository;
+import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.*;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.model.Course;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.model.CourseContent;
+import com.afdul.belajar.springboot.learningmanagementsystem.question.dto.request.ReviewRequest;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.repository.*;
+import com.afdul.belajar.springboot.learningmanagementsystem.user.dto.response.UserInfoResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.User;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +27,15 @@ import java.util.stream.Collectors;
 public class CourseService {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    CourseRepository courseRepository;
+    private CourseRepository courseRepository;
 
     @Autowired
-    CourseContentRepository courseContentRepository;
+    private CourseContentRepository courseContentRepository;
+    @Autowired
+    private ReviewRepository reviewRepository;
 
 
     // CREATE A COURSE -- ONLY ADMIN
@@ -79,50 +83,14 @@ public class CourseService {
 
     // GET ALL COURSES --WITHOUT PURCHASE
     @Transactional
-    public Page<CourseResponse> getAllCourses(String search, Pageable pageable) {
+    public Page<CoursePreviewResponse> getAllCourses(String search, Pageable pageable) {
         return courseRepository.getAllCourses(search, pageable);
     }
 
     // GET DETAIL COURSES --WITHOUT PURCHASE
     @Transactional
-    public CourseResponse getCourseWithoutPurchase(Long courseId) {
+    public CourseDetailResponse getCourseWithoutPurchase(Long courseId) {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Course not found"));
-
-        CourseResponse courseResponse = new CourseResponse();
-        courseResponse.setName(course.getName());
-
-        return CourseResponse.builder()
-                .id(course.getId())
-                .name(course.getName())
-                .description(course.getDescription())
-                .price(course.getPrice())
-                .discount(course.getDiscount())
-                .tags(course.getTags())
-                .level(course.getLevel())
-                .videoDemo(course.getVideoDemo())
-                .thumbnail(course.getThumbnail())
-                .ratings(course.getRatings())
-                .purchased(course.getPurchased())
-                .benefits(course.getBenefits())
-                .prerequisites(course.getPrerequisites())
-                .build();
-    }
-
-    // GET FULL DETAIL COURSE AFTER PURCHASE / ADMIN
-    public CourseDetailResponse getCourseAfterPurchase(Long courseId) {
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Course not found"));
-        List<CourseContent> courseContents = courseContentRepository.findByCourseId(course);
-
-        List<CourseContentResponse> courseDataList = courseContents.stream()
-                .map(courseContent -> CourseContentResponse.builder()
-                        .id(courseContent.getId())
-                        .title(courseContent.getTitle())
-                        .description(courseContent.getDescription())
-                        .video_url(courseContent.getVideo_url())
-                        .video_length(courseContent.getVideo_length())
-                        .thumbnail(courseContent.getThumbnail())
-                        .build())
-                .toList();
 
         return CourseDetailResponse.builder()
                 .id(course.getId())
@@ -138,8 +106,73 @@ public class CourseService {
                 .purchased(course.getPurchased())
                 .benefits(course.getBenefits())
                 .prerequisites(course.getPrerequisites())
-                .courseData(courseDataList)
+                .author(mapToUserInfoToDTOs(course.getCreatedBy()))
                 .build();
     }
+
+    // GET FULL DETAIL COURSE AFTER PURCHASE / ADMIN
+    public CourseDetailResponse getCourseAfterPurchase(Long courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Course not found"));
+
+        return CourseDetailResponse.builder()
+                .id(course.getId())
+                .name(course.getName())
+                .description(course.getDescription())
+                .price(course.getPrice())
+                .discount(course.getDiscount())
+                .tags(course.getTags())
+                .level(course.getLevel())
+                .videoDemo(course.getVideoDemo())
+                .thumbnail(course.getThumbnail())
+                .ratings(course.getRatings())
+                .purchased(course.getPurchased())
+                .benefits(course.getBenefits())
+                .prerequisites(course.getPrerequisites())
+                .courseData(mapCourseContentsToDTOs(course.getContents()))
+                .author(mapToUserInfoToDTOs(course.getCreatedBy()))
+                .build();
+    }
+
+    // EXAMPLE HOW MAP OBJECT
+    private UserInfoResponse mapToUserInfoToDTOs(User user) {
+        return UserInfoResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .username(user.getUsername())
+                .build();
+    }
+
+    // EXAMPLE HOW TO MAP LIST / ARRAY
+    private List<CourseContentResponse> mapCourseContentsToDTOs(List<CourseContent> courseContents) {
+        return courseContents.stream()
+                .map(courseContent -> CourseContentResponse.builder()
+                        .id(courseContent.getId())
+                        .title(courseContent.getTitle())
+                        .description(courseContent.getDescription())
+                        .video_url(courseContent.getVideo_url())
+                        .video_length(courseContent.getVideo_length())
+                        .thumbnail(courseContent.getThumbnail())
+                        .build()
+                )
+                .collect(Collectors.toList());
+    }
+
+    // ADD REVIEW TO COURSE
+    @Transactional
+    public void addReview(ReviewRequest request) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findById(userDetails.getId()).orElseThrow(() -> new RuntimeException("User not found"));
+        Course course = courseRepository.findById(request.getCourseId()).orElseThrow(() -> new RuntimeException("Course not found"));
+
+        Review review = new Review();
+
+        review.setReview(request.getReview());
+        review.setCourseId(course);
+        review.setCreatedBy(user);
+
+        reviewRepository.save(review);
+
+    }
+
 
 }
