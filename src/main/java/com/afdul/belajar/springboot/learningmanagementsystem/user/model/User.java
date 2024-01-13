@@ -1,6 +1,7 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.user.model;
 
 import com.afdul.belajar.springboot.learningmanagementsystem.course.model.Course;
+import com.afdul.belajar.springboot.learningmanagementsystem.order.model.CartItem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,10 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @Setter

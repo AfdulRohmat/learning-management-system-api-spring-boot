@@ -1,5 +1,6 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.course.model;
 
+import com.afdul.belajar.springboot.learningmanagementsystem.order.model.CartItem;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.User;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
@@ -63,6 +64,9 @@ public class Course {
 
     @OneToMany(mappedBy = "courseId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "course")
+    private List<CartItem> cartItems = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

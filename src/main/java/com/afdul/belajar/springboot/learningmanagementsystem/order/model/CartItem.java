@@ -1,9 +1,8 @@
-package com.afdul.belajar.springboot.learningmanagementsystem.course.model;
+package com.afdul.belajar.springboot.learningmanagementsystem.order.model;
 
+import com.afdul.belajar.springboot.learningmanagementsystem.course.model.Course;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,26 +17,21 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "reviews")
-public class Review {
+@Table(name = "cart_items")
+public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "TEXT")
-    private String review;
-
-    @Min(value = 1)
-    @Max(value = 5)
-    private int rating;
-
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
-    private Course courseId;
+    private Course course;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User createdBy;
+    private User user;
+
+    private int quantity;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

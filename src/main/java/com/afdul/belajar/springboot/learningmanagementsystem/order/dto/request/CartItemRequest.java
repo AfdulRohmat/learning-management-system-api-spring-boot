@@ -1,4 +1,4 @@
-package com.afdul.belajar.springboot.learningmanagementsystem.question.dto.request;
+package com.afdul.belajar.springboot.learningmanagementsystem.order.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ReviewRequest {
-    private String review;
+public class CartItemRequest {
     private Long courseId;
+    private Long userId;
 }

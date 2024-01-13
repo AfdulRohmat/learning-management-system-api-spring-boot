@@ -8,13 +8,14 @@ import com.afdul.belajar.springboot.learningmanagementsystem.course.repository.R
 import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.*;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.model.Course;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.model.CourseContent;
-import com.afdul.belajar.springboot.learningmanagementsystem.question.dto.request.ReviewRequest;
+import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.request.ReviewRequest;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.repository.*;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.dto.response.UserInfoResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.User;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -163,15 +164,61 @@ public class CourseService {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findById(userDetails.getId()).orElseThrow(() -> new RuntimeException("User not found"));
         Course course = courseRepository.findById(request.getCourseId()).orElseThrow(() -> new RuntimeException("Course not found"));
+        List<Review> reviews = reviewRepository.findByCourseId(course);
+
+        int totalRatings = 0;
+        double averageRating = 0.0;
+        if (reviews.isEmpty()) {
+            averageRating = 0.0;
+        }
+
+        for (Review review : reviews) {
+            totalRatings += review.getRating();
+        }
+
+        averageRating = (double) totalRatings / reviews.size();
+
+        System.out.println("ratings :" + averageRating);
 
         Review review = new Review();
 
         review.setReview(request.getReview());
+        review.setRating(request.getRating());
         review.setCourseId(course);
         review.setCreatedBy(user);
 
         reviewRepository.save(review);
 
+        course.setRatings(averageRating);
+
+    }
+
+    // GET REVIEW BY COURSE ID
+    @Transactional
+    public Page<ReviewResponse> getAllReviewByCourseId(Long courseId, Pageable pageable) {
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Course not found"));
+        List<Review> reviews = reviewRepository.getAllReviewByCourseId(course, pageable);
+
+        return new PageImpl<>(reviews.stream()
+                .map(review -> mapToReviewResponse(review, course))
+                .collect(Collectors.toList()), pageable, reviews.size());
+
+    }
+
+    private ReviewResponse mapToReviewResponse(Review review, Course course) {
+        UserInfoResponse userInfoResponse = new UserInfoResponse(
+                review.getCreatedBy().getId(),
+                review.getCreatedBy().getUsername(),
+                review.getCreatedBy().getEmail()
+        );
+
+        return ReviewResponse.builder()
+                .id(review.getId())
+                .review(review.getReview())
+                .rating(review.getRating())
+                .user(userInfoResponse)
+                .createdAt(review.getCreatedAt())
+                .build();
     }
 
 

@@ -26,7 +26,6 @@ public class CourseRequest {
     private String thumbnail;
     private List<String> benefits;
     private List<String> prerequisites;
-    private double ratings;
     private int purchased;
     private User createdBy;
 }

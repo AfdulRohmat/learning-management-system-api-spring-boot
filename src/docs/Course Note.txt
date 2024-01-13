@@ -1,22 +1,53 @@
-Course
+NEXT FEATURE
 
-name
-description
-price
-discount
-tags
-level
-vide_demo (Request as File, Response as string url)
-thumbnail
-benefits
-prerequisites
-ratings
-purchased
+Cart table
+- id
+- user_id
+- course_id
 
-CourseContent
-title
-description
-video_length
-video_url
-thumbnail
-course_id
+total price will directly calculate using join query from course_id == Course.id
+
+API :
+
+Add Cart
+POST /cart
+body : user_id, course_id
+
+Remove cart by id
+DELETE /cart/{id}
+
+Remove all Cart
+DELETE /cart
+
+
+CART TO ORDER FUNCTIONALITY AND LOGIC FLOW:
+### 1. **Create a Cart Table:**
+   - Your `Cart` table can have columns like `cart_id`, `user_id`, `course_id`, `quantity`, and `added_at`. The `quantity` column can be set to 1 since, as you mentioned, each course will have a quantity of 1 in the cart.
+
+### 2. **Add Courses to the Cart:**
+   - When a user adds a course to the cart, insert a new row into the `Cart` table with the corresponding `user_id`, `course_id`, and other relevant information.
+
+### 3. **View Cart:**
+   - Allow users to view their cart, displaying the courses they've added along with details like the course name, price, and total.
+
+### 4. **Checkout:**
+   - When a user initiates the checkout process, create an order or purchase record. This new table (e.g., `Order` or `Purchase`) can store information like `order_id`, `user_id`, `total_price`, `order_date`, etc.
+
+### 5. **Move Cart Items to Order Table:**
+   - Copy the relevant cart items to the `Order` or `Purchase` table. This can be done by inserting rows with the same `user_id`, `course_id`, `quantity`, and other details from the cart into the new table.
+
+### 6. **Remove Items from Cart:**
+   - After successful checkout, remove the corresponding rows from the `Cart` table.
+
+### 7. **View Order History:**
+   - Allow users to view their order history, displaying details about past orders.
+
+### 8. **Handle Checkout Confirmation and Payment:**
+   - Implement a mechanism to confirm the checkout and handle payment processing if necessary.
+
+### 9. **Considerations:**
+   - Ensure that your cart operations are atomic and handle concurrency issues, especially in scenarios where multiple users might be interacting with their carts simultaneously.
+
+This approach provides a straightforward way to manage the cart and orders separately. Users can add courses to the cart, review them, and then initiate the checkout process. After checkout, the cart is cleared, and a record of the order is stored for reference.
+
+If you have specific questions about any of these steps or if you'd like to dive deeper into the implementation of a particular feature, feel free to let me know!
