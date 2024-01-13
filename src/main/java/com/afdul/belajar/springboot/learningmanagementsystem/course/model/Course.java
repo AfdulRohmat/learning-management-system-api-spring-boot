@@ -1,6 +1,6 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.course.model;
 
-import com.afdul.belajar.springboot.learningmanagementsystem.order.model.CartItem;
+import com.afdul.belajar.springboot.learningmanagementsystem.cart.model.CartItem;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.User;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
@@ -15,7 +15,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Type;
 
 @Getter

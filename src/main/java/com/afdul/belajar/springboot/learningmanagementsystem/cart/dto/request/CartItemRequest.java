@@ -1,4 +1,4 @@
-package com.afdul.belajar.springboot.learningmanagementsystem.order.dto.request;
+package com.afdul.belajar.springboot.learningmanagementsystem.cart.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

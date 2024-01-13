@@ -1,7 +1,6 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.user.model;
 
 import com.afdul.belajar.springboot.learningmanagementsystem.course.model.Course;
-import com.afdul.belajar.springboot.learningmanagementsystem.order.model.CartItem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

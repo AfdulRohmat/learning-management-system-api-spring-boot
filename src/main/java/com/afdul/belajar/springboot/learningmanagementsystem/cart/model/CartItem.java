@@ -1,4 +1,4 @@
-package com.afdul.belajar.springboot.learningmanagementsystem.order.model;
+package com.afdul.belajar.springboot.learningmanagementsystem.cart.model;
 
 import com.afdul.belajar.springboot.learningmanagementsystem.course.model.Course;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.User;
