@@ -30,8 +30,11 @@ public class CourseContent {
     private String description;
 
     private int video_length;
-    private String video_url;
-    private String thumbnail;
+
+    @Column(name = "video_content_filename")
+    private String videoContentFilename;
+
+    private String thumbnailUrl;
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)

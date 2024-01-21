@@ -1,6 +1,7 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.cart.service;
 
 import com.afdul.belajar.springboot.learningmanagementsystem.auth.config.security.services.UserDetailsImpl;
+import com.afdul.belajar.springboot.learningmanagementsystem.cart.dto.response.TotalCartResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.cart.dto.response.TotalPriceResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CoursePreviewResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.course.model.Course;
@@ -82,7 +83,7 @@ public class CartService {
                 cartItem.getCourse().getId(),
                 cartItem.getCourse().getName(),
                 cartItem.getCourse().getPrice(),
-                cartItem.getCourse().getThumbnail(),
+                cartItem.getCourse().getThumbnailUrl(),
                 cartItem.getCourse().getRatings(),
                 cartItem.getCourse().getPurchased(),
                 userInfoResponse
@@ -113,6 +114,18 @@ public class CartService {
 
         return TotalPriceResponse.builder()
                 .totalPrice(totalPrice != null ? totalPrice : Double.valueOf(0.00))
+                .build();
+    }
+
+    // TOTAL CART ON PARTICULAS USER
+    @Transactional
+    public TotalCartResponse getTotalItemOnCart() {
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findById(userDetails.getId()).orElseThrow(() -> new RuntimeException("User not found"));
+
+        Integer totalCart = cartItemRepository.countByUser(user);
+        return TotalCartResponse.builder()
+                .totalCart(totalCart)
                 .build();
     }
 }

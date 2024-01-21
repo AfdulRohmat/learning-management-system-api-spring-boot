@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
@@ -14,7 +15,7 @@ public class CourseContentRequest {
     private String title;
     private String description;
     private int video_length;
-    private String video_url;
-    private String thumbnail;
+    private MultipartFile video_content_filename;
+    private MultipartFile thumbnail;
     private Long courseId;
 }

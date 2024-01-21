@@ -16,7 +16,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     @Query("SELECT new com.afdul.belajar.springboot.learningmanagementsystem.course.dto.response.CoursePreviewResponse(" +
             "c.id, c.name, c.price, " +
-            "c.thumbnail, c.ratings, c.purchased, " +
+            "c.thumbnailUrl, c.ratings, c.purchased, " +
             "new com.afdul.belajar.springboot.learningmanagementsystem.user.dto.response.UserInfoResponse(c.createdBy.id, c.createdBy.username, c.createdBy.email))" +
             "FROM Course c " +
             "WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :search, '%'))")

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     long countByCourseAndUser(Course course, User user);
@@ -18,4 +19,8 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
     @Query("SELECT SUM(ci.course.price) FROM CartItem ci WHERE ci.user = :user")
     Double getTotalPrice(@Param("user") User user);
+
+    Integer countByUser(User user);
+
+
 }

@@ -1,6 +1,7 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.cart.controller;
 
 import com.afdul.belajar.springboot.learningmanagementsystem.cart.dto.response.CartResponse;
+import com.afdul.belajar.springboot.learningmanagementsystem.cart.dto.response.TotalCartResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.cart.dto.response.TotalPriceResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.cart.service.CartService;
 import com.afdul.belajar.springboot.learningmanagementsystem.utils.ResponseHandler;
@@ -67,10 +68,24 @@ public class CartController {
         try {
             TotalPriceResponse response = cartService.getTotalPrice();
 
-            return ResponseHandler.generateResponse("Success delete data", HttpStatus.OK, response);
+            return ResponseHandler.generateResponse("Success get data", HttpStatus.OK, response);
         } catch (Exception e) {
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
         }
     }
+
+    // TOTAL CART
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @GetMapping("/total-cart")
+    public ResponseEntity<Object> getTotalItemOnCart() {
+        try {
+            TotalCartResponse response = cartService.getTotalItemOnCart();
+
+            return ResponseHandler.generateResponse("Success get data", HttpStatus.OK, response);
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
+        }
+    }
+
 
 }

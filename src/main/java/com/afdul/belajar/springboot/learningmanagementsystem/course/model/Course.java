@@ -38,10 +38,11 @@ public class Course {
     private String tags;
     private String level;
 
-    @Column(name = "video_demo")
-    private String videoDemo;
+    @Column(name = "video_demo_filename")
+    private String videoDemoFilename;
 
-    private String thumbnail;
+    @Column(name = "thumbnail_url")
+    private String thumbnailUrl;
 
     @Column(columnDefinition = "jsonb", nullable = false, updatable = true, name = "benefits")
     @Type(JsonBinaryType.class)

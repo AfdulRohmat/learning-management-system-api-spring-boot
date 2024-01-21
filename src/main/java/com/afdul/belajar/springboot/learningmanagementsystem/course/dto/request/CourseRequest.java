@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -15,15 +16,14 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class CourseRequest {
-
     private String name;
     private String description;
     private double price;
     private double discount;
     private String tags;
     private String level;
-    private String video_demo;
-    private String thumbnail;
+    private MultipartFile video_filename;
+    private MultipartFile thumbnail;
     private List<String> benefits;
     private List<String> prerequisites;
     private int purchased;
