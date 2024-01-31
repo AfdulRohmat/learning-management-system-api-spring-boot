@@ -104,6 +104,16 @@
             <artifactId>aws-java-sdk</artifactId>
             <version>1.12.640</version>
         </dependency>
+        <dependency>
+            <groupId>com.midtrans</groupId>
+            <artifactId>java-library</artifactId>
+            <version>3.1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>2.0.31</version>
+        </dependency>
 
     </dependencies>
 
