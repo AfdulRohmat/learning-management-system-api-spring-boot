@@ -83,7 +83,7 @@ public class CourseService {
         course.setThumbnailUrl(thumbnailUrl);
         course.setBenefits(courseRequest.getBenefits());
         course.setPrerequisites(courseRequest.getPrerequisites());
-        course.setRatings(0);
+        course.setRatings(0.0);
         course.setPurchased(0);
         course.setCreatedBy(user);
 
@@ -165,7 +165,6 @@ public class CourseService {
 
         String videoDemoFilename = course.getVideoDemoFilename();
         String videoDemoUrl = awsService.getVideoUrl(videoDemoFilename);
-
 
 
         return CourseDetailResponse.builder()

@@ -33,8 +33,8 @@ public class Course {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    private double price;
-    private double discount;
+    private Double price;
+    private Double discount;
     private String tags;
     private String level;
 
@@ -52,8 +52,8 @@ public class Course {
     @Type(JsonBinaryType.class)
     private Object prerequisites;
 
-    private double ratings;
-    private int purchased;
+    private Double ratings;
+    private Integer purchased;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

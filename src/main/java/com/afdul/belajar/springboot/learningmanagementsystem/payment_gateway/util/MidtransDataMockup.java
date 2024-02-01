@@ -38,6 +38,7 @@ public class MidtransDataMockup {
 
         Map<String, String> bankTransfer = new HashMap<>();
         bankTransfer.put("bank", getSelectBankTransfer());
+        bankTransfer.put("va_number", "111111");
 
         List<Map<String, String>> items = new ArrayList<>();
 

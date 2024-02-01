@@ -1,7 +1,6 @@
-package com.afdul.belajar.springboot.learningmanagementsystem.cart.model;
+package com.afdul.belajar.springboot.learningmanagementsystem.order.model;
 
-import com.afdul.belajar.springboot.learningmanagementsystem.course.model.Course;
-import com.afdul.belajar.springboot.learningmanagementsystem.user.model.User;
+import com.afdul.belajar.springboot.learningmanagementsystem.user.model.ERole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,21 +16,26 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "cart_items")
-public class CartItem {
+@Table(name = "orders")
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "course_id", nullable = false)
-    private Course course;
+    @Column(name = "order_id")
+    private String orderId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "transaction_id")
+    private String transactionId;
 
-    private Integer quantity;
+    @Enumerated(EnumType.STRING)
+    private EStatus status;
+
+    @Column(name = "gross_amount")
+    private String grossAmount;
+
+    @Column(name = "payment_type")
+    private String paymentType;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -40,4 +44,9 @@ public class CartItem {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Timestamp updatedAt;
+
+    @Column(name = "deleted_at")
+    private Timestamp deletedAt;
+
+
 }
