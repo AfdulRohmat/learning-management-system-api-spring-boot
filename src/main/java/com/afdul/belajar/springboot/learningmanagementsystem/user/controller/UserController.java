@@ -1,7 +1,9 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.user.controller;
 
+import com.afdul.belajar.springboot.learningmanagementsystem.user.dto.response.PurchasedCourseResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.dto.response.UserResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.service.UserService;
+import com.afdul.belajar.springboot.learningmanagementsystem.utils.PaginationUtil;
 import com.afdul.belajar.springboot.learningmanagementsystem.utils.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,6 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -39,6 +44,20 @@ public class UserController {
             UserResponse response = userService.getUser();
 
             return ResponseHandler.generateResponse("Success get data", HttpStatus.OK, response);
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
+        }
+    }
+
+
+    @GetMapping("/purchased-course")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Object> getPurchasedCoursesAndUserDataByUserId(Pageable pageable) {
+        try {
+            List<PurchasedCourseResponse> response = userService.getPurchasedCoursesAndUserDataByUserId();
+
+            Page<PurchasedCourseResponse> page = PaginationUtil.paginateList(pageable, response);
+            return ResponseHandler.generateResponse("Success get data", HttpStatus.OK, page);
         } catch (Exception e) {
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
         }

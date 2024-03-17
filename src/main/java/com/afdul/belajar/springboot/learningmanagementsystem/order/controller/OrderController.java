@@ -7,6 +7,7 @@ import com.afdul.belajar.springboot.learningmanagementsystem.course.dto.request.
 import com.afdul.belajar.springboot.learningmanagementsystem.order.dto.Response.OrderStatusResponse;
 import com.afdul.belajar.springboot.learningmanagementsystem.order.model.Order;
 import com.afdul.belajar.springboot.learningmanagementsystem.order.repository.OrderRepository;
+import com.afdul.belajar.springboot.learningmanagementsystem.order.service.OrderService;
 import com.afdul.belajar.springboot.learningmanagementsystem.payment_gateway.dto.request.BCAVirtualAccountRequest;
 import com.afdul.belajar.springboot.learningmanagementsystem.payment_gateway.dto.request.CheckOrderStatusRequest;
 import com.afdul.belajar.springboot.learningmanagementsystem.payment_gateway.dto.response.ChargeResponse;
@@ -50,6 +51,9 @@ public class OrderController {
     @Autowired
     private CoreAPIService coreAPIService;
 
+    @Autowired
+    private OrderService orderService;
+
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(value = "/payment/bca-va", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -61,7 +65,7 @@ public class OrderController {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findById(userDetails.getId()).orElseThrow(() -> new RuntimeException("User not found"));
 
-        Double totalPrice = cartItemRepository.getTotalPrice(user);
+        Double totalPrice = cartItemRepository.getTotalPrice(user).orElseThrow(() -> new RuntimeException("Item not found"));
         List<CartItem> cartItems = cartItemRepository.findByUser(user, pageable);
         String orderId = "ORDER_" + timestamp.getTime();
 
@@ -85,13 +89,15 @@ public class OrderController {
         // looping all course inside cart, add to itemDetails array
         cartItems.forEach(cartItem -> {
             BCAVirtualAccountRequest.ItemDetail itemDetail = BCAVirtualAccountRequest.ItemDetail.builder()
-                    .id(cartItem.getId().toString())
+                    .id(cartItem.getCourse().getId().toString())
                     .price(cartItem.getCourse().getPrice().toString())
                     .quantity(cartItem.getQuantity().toString())
                     .name(cartItem.getCourse().getName())
                     .build();
 
             itemDetails.add(itemDetail);
+
+
         });
 
         // Get data BankTransfer

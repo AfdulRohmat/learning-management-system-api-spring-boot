@@ -110,7 +110,7 @@ public class CartService {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findById(userDetails.getId()).orElseThrow(() -> new RuntimeException("User not found"));
 
-        Double totalPrice = cartItemRepository.getTotalPrice(user);
+        Double totalPrice = cartItemRepository.getTotalPrice(user).orElseThrow(() -> new RuntimeException("Item not found"));
 
         return TotalPriceResponse.builder()
                 .totalPrice(totalPrice != null ? totalPrice : Double.valueOf(0.00))

@@ -1,0 +1,724 @@
+{
+	"info": {
+		"_postman_id": "79b62578-f728-4f19-9367-146fa70e8322",
+		"name": "Learning Management API Spring Boot",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "15515102",
+		"_collection_link": "https://planetary-robot-159806.postman.co/workspace/Team-Workspace~51d4a3fd-42fb-4791-83e1-171d60cbaff2/collection/15515102-79b62578-f728-4f19-9367-146fa70e8322?action=share&source=collection_link&creator=15515102"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\" : \"afdul\",\r\n    \"email\" : \"afdulrohmat03@gmail.com\",\r\n    \"password\" : \"rahasia\",\r\n    \"role\" : [\"user\", \"admin\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/api/v1/auth/register"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"afdulrohmat03@gmail.com\",\r\n    \"activation_code\" : 813103\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/api/v1/auth/verify-email"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"afdulrohmat03@gmail.com\",\r\n    \"password\" : \"rahasia\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/api/v1/auth/login"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/api/v1/auth/logout"
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refresh_token\" : \"b477b62b-babb-4d56-bc01-8f1022569e6b\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/api/v1/auth/refresh-token"
+					},
+					"response": []
+				},
+				{
+					"name": "Resend Activation Code",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"afdulrohmat03@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/api/v1/auth/resend-activation-code"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get Users -- Only Admin",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/user/admin/all-user?search=Afdul",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"admin",
+								"all-user"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "Afdul"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User That currently Login",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/api/v1/user/"
+					},
+					"response": []
+				},
+				{
+					"name": "Cek Admin",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/api/v1/user/admin"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Question",
+			"item": [
+				{
+					"name": "Create Question",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "question",
+									"value": "i have some error, can u help me ?",
+									"type": "text"
+								},
+								{
+									"key": "courseId",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "courseContentId",
+									"value": "3",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://localhost:8080/api/v1/question/"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Questions",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "courseId",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "courseContentId",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "page",
+									"value": "2",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "size",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": "http://localhost:8080/api/v1/question/"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Detail Question Include Replies",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "courseId",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "courseContentId",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "questionId",
+									"value": "2",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://localhost:8080/api/v1/question/detail"
+					},
+					"response": []
+				},
+				{
+					"name": "Adding Question Reply",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "reply",
+									"value": "did u remember me ?",
+									"type": "text"
+								},
+								{
+									"key": "courseId",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "courseContentId",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "questionId",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://localhost:8080/api/v1/question/reply/"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Course",
+			"item": [
+				{
+					"name": "Create Course -- Only Admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Android Jetpack Compose Comprehensive Course 2024",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "250000",
+									"type": "text"
+								},
+								{
+									"key": "discount",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "tags",
+									"value": "android development, kotlin",
+									"type": "text"
+								},
+								{
+									"key": "level",
+									"value": "Beginner",
+									"type": "text"
+								},
+								{
+									"key": "video_filename",
+									"type": "file",
+									"src": "/D:/BELAJAR/Belajar Java Springboot/Bahan Upload AWS/video_demo course LMS.mkv"
+								},
+								{
+									"key": "thumbnail",
+									"type": "file",
+									"src": [
+										"/D:/BELAJAR/Belajar Java Springboot/Bahan Upload AWS/thumbnail-course-LMS.jpg",
+										"/D:/BELAJAR/Belajar Java Springboot/Bahan Upload AWS/thumbnail-course-LMS.jpg"
+									]
+								},
+								{
+									"key": "benefits",
+									"value": "{\n    \"title\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry\"\n  },\n  {\n    \"title\": \"Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book\"\n  },\n  {\n    \"title\": \"It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged\"\n  }",
+									"type": "text"
+								},
+								{
+									"key": "prerequisites",
+									"value": "{\n    \"title\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry\"\n  },\n  {\n    \"title\": \"Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book\"\n  },\n  {\n    \"title\": \"It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged\"\n  }",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://localhost:8080/api/v1/course/"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Course Content -- Only Admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Introducing of Jetpack Compose",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "What is Jetpack Compose ? What the different with old XML ?",
+									"type": "text"
+								},
+								{
+									"key": "video_length",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "video_content_filename",
+									"type": "file",
+									"src": "/D:/BELAJAR/Belajar Java Springboot/Bahan Upload AWS/1-Introduction.mp4"
+								},
+								{
+									"key": "thumbnail",
+									"type": "file",
+									"src": "/D:/BELAJAR/Belajar Java Springboot/Bahan Upload AWS/thumbnail-course-LMS.jpg"
+								},
+								{
+									"key": "courseId",
+									"value": "2",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://localhost:8080/api/v1/course/content"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Review",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "review",
+									"value": "This tutorial make me soo smart",
+									"type": "text"
+								},
+								{
+									"key": "rating",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "courseId",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://localhost:8080/api/v1/course/review"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Reviews By CourseId",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/course/review/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"course",
+								"review",
+								"3"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "size",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Courses Without Purchase",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/course/without-purchase/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"course",
+								"without-purchase",
+								""
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "Arduino",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "size",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Course By Id Without Purchase",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/api/v1/course/without-purchase/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Course By Id After Purchase",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/api/v1/course/1"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cart",
+			"item": [
+				{
+					"name": "Add Item to Cart",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "http://localhost:8080/api/v1/cart/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Item Cart",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/api/v1/cart/"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Total Price",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/api/v1/cart/total-price"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Total Cart",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/api/v1/cart/total-cart"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete item by id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "http://localhost:8080/api/v1/cart/7"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ORDER VIA PAYMENT GATEWAY",
+			"item": [
+				{
+					"name": "CHECK ORDER STATUS",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "orderId",
+									"value": "ORDER_1707093259544",
+									"type": "text"
+								},
+								{
+									"key": "transactionId",
+									"value": "ea23ff67-2027-450c-90f9-5dac5e10ccb0",
+									"type": "text"
+								},
+								{
+									"key": "statusCode",
+									"value": "200",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://localhost:8080/api/v1/order/check-status"
+					},
+					"response": []
+				},
+				{
+					"name": "CHARGE BCA VA",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": "http://localhost:8080/api/v1/order/payment/bca-va"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": {
+			"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZmR1bHJvaG1hdDAzQGdtYWlsLmNvbSIsImlhdCI6MTcwNzA5MzE5OCwiZXhwIjoxNzA3MDk0MDk4fQ.jyGxB923hiPHg9_fOpoILJjc9TfzjgII-YFKuJW15DQ"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

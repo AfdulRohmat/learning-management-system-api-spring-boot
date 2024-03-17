@@ -14,7 +14,6 @@ import java.util.ArrayList;
 @AllArgsConstructor
 @Builder
 public class OrderStatusResponse {
-    public int id;
     public String orderId;
     public String status;
     public String grossAmount;

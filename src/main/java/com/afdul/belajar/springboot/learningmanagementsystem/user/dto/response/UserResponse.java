@@ -1,5 +1,6 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.user.dto.response;
 
+import com.afdul.belajar.springboot.learningmanagementsystem.course.model.Course;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.ERole;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.Role;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.User;
@@ -13,8 +14,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class UserResponse {
 
@@ -27,13 +28,14 @@ public class UserResponse {
 
     private List<ERole> roles;
 
-    public UserResponse(User user) {
-        this.id = user.getId();
-        this.username = user.getUsername();
-        this.email = user.getEmail();
-        this.isVerified = user.getIsVerified();
-        this.roles = user.getRoles().stream()
-                .map(Role::getName)
-                .collect(Collectors.toList());
-    }
+//    public UserResponse(User user) {
+//        this.id = user.getId();
+//        this.username = user.getUsername();
+//        this.email = user.getEmail();
+//        this.isVerified = user.getIsVerified();
+//        this.roles = user.getRoles().stream()
+//                .map(Role::getName)
+//                .collect(Collectors.toList());
+//
+//    }
 }

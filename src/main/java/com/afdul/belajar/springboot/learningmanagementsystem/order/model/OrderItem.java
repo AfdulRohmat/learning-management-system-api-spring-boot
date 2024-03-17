@@ -1,6 +1,6 @@
 package com.afdul.belajar.springboot.learningmanagementsystem.order.model;
 
-import com.afdul.belajar.springboot.learningmanagementsystem.user.model.ERole;
+import com.afdul.belajar.springboot.learningmanagementsystem.course.model.Course;
 import com.afdul.belajar.springboot.learningmanagementsystem.user.model.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,39 +11,32 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "orders")
-public class Order {
-
+@Table(name = "order_items")
+public class OrderItem {
     @Id
-    @Column(name = "order_id")
-    private String orderId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(name = "transaction_id")
-    private String transactionId;
+    @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
 
-    @Enumerated(EnumType.STRING)
-    private EStatus status;
-
-    @Column(name = "gross_amount")
-    private String grossAmount;
-
-    @Column(name = "payment_type")
-    private String paymentType;
+    @ManyToOne
+    @JoinColumn(name = "course_id", nullable = false)
+    private Course course;
 
     @ManyToOne
     @JoinColumn(name = "purchased_by", nullable = false)
     private User purchasedBy;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems = new ArrayList<>();
+    @Enumerated(EnumType.STRING)
+    private EStatus status;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -55,6 +48,5 @@ public class Order {
 
     @Column(name = "deleted_at")
     private Timestamp deletedAt;
-
 
 }
